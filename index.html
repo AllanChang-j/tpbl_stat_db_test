@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TPBL 進階數據分析平台｜台灣籃球球員與效率排名</title>
+  <meta name="description" content="提供 TPBL 進階數據與台籃數據分析，包含球員 RAPM、效率值與比率排名。" />
+  <!-- API 基底：Vercel 部署後請在 index.html 填正式 API 網址，例 https://your-api.com -->
+  <meta name="api-base" content="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-season="25-26" data-competition="regular">
+  <header>
+    <nav class="nav" aria-label="主選單">
+      <a class="brand" href="#/" aria-label="回首頁">
+        <span class="dot"></span>
+        <span>TPBL Stats Lab</span>
+      </a>
+      <a href="#/" data-view="landing">首頁</a>
+      <a href="#/leader/player" data-view="leader-player">球員數據</a>
+      <a href="#/leader/lineups" data-view="leader-lineups">陣容數據</a>
+      <a href="/methodology">About / Methodology</a>
+    </nav>
+  </header>
+
+  <main id="app">
+    <div id="view-landing" class="view">
+      <div class="grid">
+        <div class="left">
+          <section class="panel">
+            <div class="panel-h"><h2>球員影響力排名（進階數據）</h2><span class="hint">Top 5</span></div>
+            <div class="panel-b">
+              <div class="triple">
+                <article class="card">
+                  <div class="card-h"><h3>進攻影響力（RAPM）</h3></div>
+                  <div class="card-b" data-list="rapm-off"><span class="loading">載入中…</span></div>
+                </article>
+                <article class="card">
+                  <div class="card-h"><h3>防守影響力（RAPM）</h3></div>
+                  <div class="card-b" data-list="rapm-def"><span class="loading">載入中…</span></div>
+                </article>
+                <article class="card">
+                  <div class="card-h"><h3>整體影響力（RAPM）</h3></div>
+                  <div class="card-b" data-list="rapm-total"><span class="loading">載入中…</span></div>
+                </article>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-h"><h2>效率值排名</h2><span class="hint">Top 5</span></div>
+            <div class="panel-b">
+              <div class="triple">
+                <article class="card"><div class="card-h"><h3>進攻效率</h3></div><div class="card-b" data-list="eff-ortg"><span class="loading">載入中…</span></div></article>
+                <article class="card"><div class="card-h"><h3>防守效率</h3></div><div class="card-b" data-list="eff-drtg"><span class="loading">載入中…</span></div></article>
+                <article class="card"><div class="card-h"><h3>淨效率</h3></div><div class="card-b" data-list="eff-net"><span class="loading">載入中…</span></div></article>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panel-h"><h2>比率型數據排名</h2><span class="hint">Top 5</span></div>
+            <div class="panel-b">
+              <div class="triple">
+                <article class="card"><div class="card-h"><h3>籃板率</h3></div><div class="card-b" data-list="rate-reb"><span class="loading">載入中…</span></div></article>
+                <article class="card"><div class="card-h"><h3>助攻率</h3></div><div class="card-b" data-list="rate-ast"><span class="loading">載入中…</span></div></article>
+                <article class="card"><div class="card-h"><h3>罰球率</h3></div><div class="card-b" data-list="rate-ft"><span class="loading">載入中…</span></div></article>
+              </div>
+            </div>
+          </section>
+          <section class="panel gateway">
+            <h2>進階數據怎麼解讀？</h2>
+            <p>不知道 RAPM、效率值、比率數據各自代表什麼？先從常見解讀方式開始。</p>
+            <a class="cta" href="/explainer/advanced-metrics">前往進階數據解釋 <span class="arrow">→</span></a>
+          </section>
+          <section class="panel gateway">
+            <h2>資料來源與數據計算方式</h2>
+            <p>TPBL 數據如何蒐集、更新與計算？本站如何處理比賽事件並產生進階指標。</p>
+            <a class="cta" href="/methodology">查看資料來源與方法 <span class="arrow">→</span></a>
+          </section>
+        </div>
+        <aside class="side">
+          <div class="panel">
+            <div class="panel-h"><h2>RAPM Spotlight</h2><span class="hint">Top 5</span></div>
+            <div class="panel-b" data-list="spotlight"><span class="loading">載入中…</span></div>
+          </div>
+          <div class="panel" style="margin-top:12px;">
+            <div class="panel-h"><h2>傳統數據場均排名</h2><span class="hint">Top 5</span></div>
+            <div class="tabs">
+              <span class="tab active" data-tab="pts">PTS</span>
+              <span class="tab" data-tab="reb">REB</span>
+              <span class="tab" data-tab="ast">AST</span>
+              <span class="tab" data-tab="stl">STL</span>
+              <span class="tab" data-tab="blk">BLK</span>
+            </div>
+            <div class="panel-b" data-list="traditional"><span class="loading">載入中…</span></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="view-leader-player" class="view" hidden>
+      <div class="panel">
+        <div class="panel-h"><h2>球員數據</h2></div>
+        <div class="panel-b">
+          <div class="leader-filters">
+            <div class="filter-row">
+              <label>賽季</label>
+              <select id="filter-season"><option value="25-26">25-26</option></select>
+              <label>賽制</label>
+              <select id="filter-competition"><option value="regular">例行賽</option></select>
+              <label>顯示單位</label>
+              <select id="filter-unit">
+                <option value="per_game">每場</option>
+                <option value="total">累積</option>
+                <option value="per36">每36分鐘</option>
+                <option value="per100">每100回合</option>
+              </select>
+            </div>
+            <div class="filter-row">
+              <label>身份</label>
+              <select id="filter-identity">
+                <option value="">全部</option>
+                <option value="Local">Local（本土）</option>
+                <option value="imported">Imported（洋將）</option>
+              </select>
+              <label>位置</label>
+              <select id="filter-position">
+                <option value="">全部</option>
+              </select>
+              <label>球隊</label>
+              <div id="filter-teams" class="filter-teams"></div>
+            </div>
+            <div class="filter-row">
+              <label>最少場次</label>
+              <input type="number" id="filter-min-games" min="0" value="0" style="width:60px" />
+              <label>搜尋球員</label>
+              <input type="text" id="filter-search" placeholder="搜尋…" style="width:120px" />
+              <button type="button" id="btn-apply-player">套用</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <p id="leader-player-status" class="loading">載入中…</p>
+            <table id="leader-player-table" class="data-table" style="display:none">
+              <thead id="leader-player-thead"></thead>
+              <tbody id="leader-player-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-leader-lineups" class="view" hidden>
+      <div class="panel">
+        <div class="panel-h"><h2>陣容數據</h2></div>
+        <div class="panel-b">
+          <p class="api-error">陣容數據 API 尚未提供，請使用現有 Pipeline 產出的 lineups CSV 或等候後端新增 lineups 端點。</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="margin-top:18px; color:var(--muted2); font-size:12px;">
+    <p style="margin:0;">© TPBL Stats Lab · <a href="/contact">合作與聯絡</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
