@@ -2,7 +2,12 @@
   var API_BASE = (document.querySelector('meta[name="api-base"]') && document.querySelector('meta[name="api-base"]').getAttribute('content')) || '';
   var season = document.body.getAttribute('data-season') || '25-26';
   var competition = document.body.getAttribute('data-competition') || 'regular';
+  if (typeof console !== 'undefined' && console.log) console.log('[TPBL] api-base:', API_BASE || '(同源)');
 
+  function getFetchOpts() {
+    if (!API_BASE || API_BASE.indexOf('ngrok') === -1) return {};
+    return { headers: { 'ngrok-skip-browser-warning': '1' } };
+  }
   function qs(s) { return document.querySelector(s); }
   function qsa(s) { return document.querySelectorAll(s); }
   function escapeHtml(s) {
@@ -42,7 +47,7 @@
     return API_BASE + '/api/players/stats?' + params.toString();
   }
   function fetchStats(sort, order, limit, minGames) {
-    return fetch(buildUrl(sort, order, limit || 5, minGames))
+    return fetch(buildUrl(sort, order, limit || 5, minGames), getFetchOpts())
       .then(function (r) { return r.json(); })
       .then(function (res) { return res.data || []; });
   }
@@ -181,8 +186,8 @@
     status.textContent = '載入中…';
     table.style.display = 'none';
     Promise.all([
-      fetch(API_BASE + '/api/players/stats?season=' + encodeURIComponent(season) + '&competition=' + encodeURIComponent(competition) + '&limit=500&min_games=0').then(function (r) { return r.json(); }),
-      fetch(API_BASE + '/api/players/meta').then(function (r) { return r.json(); })
+      fetch(API_BASE + '/api/players/stats?season=' + encodeURIComponent(season) + '&competition=' + encodeURIComponent(competition) + '&limit=500&min_games=0', getFetchOpts()).then(function (r) { return r.json(); }),
+      fetch(API_BASE + '/api/players/meta', getFetchOpts()).then(function (r) { return r.json(); })
     ]).then(function (res) {
       var data = res[0].data || [];
       var metaList = res[1].data || [];
